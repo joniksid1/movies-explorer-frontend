@@ -1,0 +1,12 @@
+.header {
+  width: 100%;
+  height: 74px;
+  color: #fff;
+  background-color: #465DFF;
+  display: flex;
+}
+
+.header_white {
+  background-color: #fff;
+  color: #000;
+}

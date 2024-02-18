@@ -1,0 +1,36 @@
+.search-form__checkbox {
+  appearance: none;
+  border: none;
+  outline: none;
+}
+
+.search-form__checkbox::before {
+  content: '';
+  cursor: pointer;
+  background-image: url(../../../../images/checkbox.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  width: 36px;
+  height: 20px;
+  background-color: #EBEBEB;
+  border-radius: 10px;
+}
+
+.search-form__checkbox::before:checked {
+  background-image: url(../../../../images/checkbox-checked.svg);
+}
+
+.search-form__text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+@media screen and (max-width: 767px) {
+  .search-form__text {
+    font-size: 11px;
+  }
+
+}
+

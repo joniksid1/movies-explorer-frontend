@@ -1,0 +1,99 @@
+.menu-modal {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  width: 520px;
+}
+
+.menu-modal__close {
+  padding: 0;
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background-image: url('../../../images/close-button.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: transparent;
+  border: 0;
+  width: 26px;
+  height: 26px;
+}
+
+.menu-modal__list_top {
+  margin-top: 159px;
+  margin-bottom: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.menu-modal__list_bottom {
+  margin-top: 617px;
+  margin-bottom: 92px;
+  padding: 0;
+}
+
+.menu-modal__list_item {
+  margin: 0;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  color: #000;
+}
+
+.menu-modal__list_item:first-of-type {
+  margin: 0;
+}
+
+.menu-modal__list_item:last-of-type {
+  margin-left: 0;
+}
+
+.menu-modal__link_wrapper {
+  margin: 0;
+}
+
+.menu-modal__link {
+  font-size: 18px;
+  line-height: 22px;
+  padding-bottom: 4px;
+}
+
+.menu-modal__link:hover {
+  opacity: .8;
+  border-bottom: 2px solid #000;
+}
+
+.menu-modal__text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.menu-modal__account-logo {
+  background-color: #F9F9F9;
+}
+
+@media screen and (max-width: 767px) {
+  .menu-modal {
+    width: 320px;
+  }
+
+  .menu-modal__close {
+    top: 17px;
+    right: 17px;
+  }
+
+  .menu-modal__list_top {
+    margin-top: 140px;
+  }
+
+  .menu-modal__list_bottom {
+    margin-top: 434px;
+  }
+}
