@@ -42,7 +42,7 @@
   align-items: center;
 }
 
-.about-project__timer_subtitle {
+.about-project__timer-subtitle {
   margin: 0;
   height: 36px;
   font-size: 14px;
@@ -53,11 +53,11 @@
   align-items: center;
 }
 
-.about-project__timer_subtitle_type_green {
+.about-project__timer-subtitle_type_green {
   background-color: #2BE080;
 }
 
-.about-project__timer_subtitle_type_grey {
+.about-project__timer-subtitle_type_grey {
   background-color: #F2F2F2;
 }
 

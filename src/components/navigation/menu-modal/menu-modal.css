@@ -8,6 +8,7 @@
   align-items: center;
   background-color: #fff;
   width: 520px;
+  height: 100%;
 }
 
 .menu-modal__close {
@@ -55,6 +56,8 @@
 }
 
 .menu-modal__link_wrapper {
+  display: flex;
+  align-items: center;
   margin: 0;
 }
 

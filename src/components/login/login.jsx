@@ -24,7 +24,7 @@ const Login = ({ onLogin }) => {
   return (
     <div className='register'>
       <form className='register__form' name='login' noValidate>
-        <img className='navigation__logo navigation__logo_type_register' src={Logo} alt='Логотип' onClick={() => navigate('/')} />
+        <img className='register__logo' src={Logo} alt='Логотип' onClick={() => navigate('/')} />
         <h1 className='register__title'>Рады видеть!</h1>
         <div className="register__wrapper register__wrapper_type_input">
           <label className='register__label'>
@@ -68,7 +68,7 @@ const Login = ({ onLogin }) => {
           </button>
           <p className="register__caption">
             Ещё не зарегистрированы?
-            <Link to="/sign-up" className="register__caption register__link">
+            <Link to="/sign-up" className="register__link">
               {" "}
               Регистрация
             </Link>

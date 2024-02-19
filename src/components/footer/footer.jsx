@@ -12,7 +12,7 @@ function Footer() {
           &copy;&nbsp;2023
         </span>
         <ul className='footer__list'>
-          <li className='footer__list_item'>
+          <li className='footer__list-item'>
             <a
               href='https://practicum.yandex.ru/'
               target='_blank'
@@ -22,7 +22,7 @@ function Footer() {
               Яндекс.Практикум
             </a>
           </li>
-          <li className='footer__list_item'>
+          <li className='footer__list-item'>
             <a
               href='https://github.com/joniksid1'
               target='_blank'

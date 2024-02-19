@@ -8,7 +8,7 @@ function Portfolio() {
         Портфолио
       </h3>
       <ul className='portfolio__list'>
-        <li className='portfolio__list_item'>
+        <li className='portfolio__list-item'>
           <a
             className='portfolio__link'
             href='https://joniksid1.github.io/how-to-learn/'
@@ -23,7 +23,7 @@ function Portfolio() {
             </span>
           </a>
         </li>
-        <li className='portfolio__list_item'>
+        <li className='portfolio__list-item'>
           <a
             className='portfolio__link'
             href='https://joniksid1.github.io/russian-travel/'
@@ -38,7 +38,7 @@ function Portfolio() {
             </span>
           </a>
         </li>
-        <li className='portfolio__list_item'>
+        <li className='portfolio__list-item'>
           <a
             className='portfolio__link'
             href='https://joniksid1.github.io/react-mesto-auth/'

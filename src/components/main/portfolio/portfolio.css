@@ -21,11 +21,11 @@
   list-style-type: none;
 }
 
-.portfolio__list_item {
+.portfolio__list-item {
   margin-top: 5px;
 }
 
-.portfolio__list_item:last-of-type {
+.portfolio__list-item:last-of-type {
   margin-top: 10px;
 }
 

@@ -27,11 +27,11 @@ function AboutProject() {
       </div>
       <div className='about-project__timer'>
         <div className='about-project__wrapper'>
-          <h3 className='about-project__timer_subtitle about-project__timer_subtitle_type_green'>1 неделя</h3>
+          <h3 className='about-project__timer-subtitle about-project__timer-subtitle_type_green'>1 неделя</h3>
           <p className='about-project__timer-text'>Back-end</p>
         </div>
         <div className='about-project__wrapper'>
-          <h3 className='about-project__timer_subtitle about-project__timer_subtitle_type_grey'>4 недели</h3>
+          <h3 className='about-project__timer-subtitle about-project__timer-subtitle_type_grey'>4 недели</h3>
           <p className='about-project__timer-text'>Front-end</p>
         </div>
       </div>
