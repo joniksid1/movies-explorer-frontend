@@ -1,0 +1,146 @@
+.about-project {
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  margin-left: 70px;
+  margin-right: 70px;
+  margin-top: 110px;
+}
+
+.about-project__two-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-project__wrapper {
+  margin-top: 70px;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-project__subtitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.04em;
+}
+
+.about-project__text {
+  margin: 0;
+  margin-top: 26px;
+  max-width: 550px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.about-project__timer {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  align-items: center;
+}
+
+.about-project__timer-subtitle {
+  margin: 0;
+  height: 36px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-project__timer-subtitle_type_green {
+  background-color: #2BE080;
+}
+
+.about-project__timer-subtitle_type_grey {
+  background-color: #F2F2F2;
+}
+
+.about-project__timer-text {
+  margin: 0;
+  margin-top: 14px;
+  margin-bottom: 110px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+  color: #A0A0A0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 1279px) {
+  .about-project {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 90px;
+  }
+
+  .about-project__two-columns {
+    gap: 25px;
+  }
+
+  .about-project__text {
+    font-size: 12px;
+    line-height: 18px;
+    margin-top: 22px;
+  }
+
+  .about-project__timer {
+    margin-top: 23px;
+  }
+
+  .about-project__timer-text {
+    margin-bottom: 90px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .about-project {
+    margin-left: 18px;
+    margin-right: 18px;
+    margin-top: 70px;
+  }
+
+  .about-project__two-columns {
+    flex-direction: column;
+    gap: 0px;
+  }
+
+  .about-project__wrapper {
+    margin-top: 60px;
+  }
+
+  .about-project__subtitle {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .about-project__text {
+    font-size: 11px;
+    line-height: 16px;
+    margin-top: 16px;
+  }
+
+  .about-project__timer {
+    margin-top: 0;
+    grid-template-columns: 100px auto;
+  }
+
+  .about-project__timer_subtitle {
+    font-size: 11px;
+    line-height: 13px;
+  }
+
+  .about-project__timer-text {
+    font-size: 11px;
+    line-height: 13px;
+    margin-top: 10px;
+    margin-bottom: 69px;
+  }
+}
