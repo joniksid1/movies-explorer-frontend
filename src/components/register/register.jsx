@@ -12,7 +12,7 @@ const Login = ({ onRegister }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onRegister(passwordValue, emailValue);
+    onRegister(nameValue, passwordValue, emailValue);
   };
 
   const handleNameChange = (e) => {
@@ -29,7 +29,7 @@ const Login = ({ onRegister }) => {
 
   return (
     <div className='register'>
-      <form className='register__form' name='login' noValidate>
+      <form className='register__form' name='login' noValidate onSubmit={handleSubmit}>
         <img className='register__logo' src={Logo} alt='Логотип' onClick={() => navigate('/')} />
         <h1 className='register__title'>Добро пожаловать!</h1>
         <div className="register__wrapper register__wrapper_type_input">

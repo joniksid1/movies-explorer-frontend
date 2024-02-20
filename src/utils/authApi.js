@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'http://localhost:3001';
 
 
 const getRequest = (url, options) => {
@@ -17,14 +17,14 @@ const getRequest = (url, options) => {
     })
 };
 
-export const register = (password, email) => {
+export const register = (name, password, email) => {
   return getRequest(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({password, email})
+    body: JSON.stringify({name, password, email})
   })
 };
 

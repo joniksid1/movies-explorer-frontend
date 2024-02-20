@@ -6,6 +6,14 @@
   align-items: center;
 }
 
+.register__logo {
+  cursor: pointer;
+}
+
+.register__logo:hover {
+  opacity: .7;
+}
+
 .register__wrapper {
   max-width: 396px;
 }
