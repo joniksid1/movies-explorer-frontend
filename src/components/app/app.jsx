@@ -25,8 +25,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
   const [isSucsessed, setIsSucsessed] = useState(false);
-  const [movies, setMovies] = useState([]);
-  const [savedMovies, setSavedMovies] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isHeaderVisible = ['/', '/movies', '/saved-movies', '/profile'].includes(location.pathname);
@@ -103,6 +101,7 @@ function App() {
 
     return api.setUserInfo(data)
       .then((data) => {
+        setCurrentUser(data);
         removeLoader();
         return data;
       })

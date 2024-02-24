@@ -1,4 +1,4 @@
-import apiOptions from './constants.js';
+import { apiOptions } from './constants.js';
 
 class Api {
   constructor({ url, headers }) {

@@ -1,3 +1,24 @@
 .movies {
   width: 100%;
 }
+
+.movies__error-wrapper {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  color: #EE3465;
+}
+
+.movies__error-message {
+  max-width: 640px;
+}
+
+@media screen and (max-width: 767px) {
+  .movies__error-message {
+    max-width: 290px;
+  }
+}

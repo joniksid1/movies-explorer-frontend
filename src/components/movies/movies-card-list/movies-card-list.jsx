@@ -1,31 +1,28 @@
 import React from 'react';
 import './movies-card-list.css';
-import { useLocation } from 'react-router-dom';
 import MoviesCard from '../movies-card/movies-card';
 
-function MoviesCardList() {
-  const location = useLocation();
-  const isMovies = ['/movies'].includes(location.pathname);
+function MoviesCardList({ movies, cardsPerPage, cardsToAdd }) {
+  const [visibleCards, setVisibleCards] = React.useState(cardsPerPage);
+
+  const handleShowMoreClick = () => {
+    setVisibleCards(prevVisibleCards => prevVisibleCards + cardsToAdd);
+  };
 
   return (
     <section className='movies-card-list'>
       <ul className='movies-card-list__list'>
-        <MoviesCard></MoviesCard>
-        <MoviesCard></MoviesCard>
-        {/* <MoviesCard></MoviesCard>
-        <MoviesCard></MoviesCard>
-        <MoviesCard></MoviesCard> */}
-        {/* <MoviesCard></MoviesCard>
-        <MoviesCard></MoviesCard>
-        <MoviesCard></MoviesCard> */}
+        {movies.slice(0, visibleCards).map(movie => (
+          <MoviesCard key={movie.id} movie={movie} />
+        ))}
       </ul>
-      {isMovies ? (
-      <div className='movies-card-list__more'>
-        <button className='movies-card-list__more-button'>Ещё</button>
-      </div>
-      ) : ''}
+      {movies.length > visibleCards && (
+        <div className='movies-card-list__more'>
+          <button className='movies-card-list__more-button' onClick={handleShowMoreClick}>Ещё</button>
+        </div>
+      )}
     </section>
   );
 }
 
-export default MoviesCardList
+export default MoviesCardList;

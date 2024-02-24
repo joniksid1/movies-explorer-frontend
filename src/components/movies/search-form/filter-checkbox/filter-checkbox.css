@@ -15,9 +15,10 @@
   height: 20px;
   background-color: #EBEBEB;
   border-radius: 10px;
+  transition: all .3s ease-in-out;
 }
 
-.search-form__checkbox::before:checked {
+.search-form__checkbox:checked::before {
   background-image: url(../../../../images/checkbox-checked.svg);
 }
 
