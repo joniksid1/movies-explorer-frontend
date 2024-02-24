@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { getId, removeId, setId } from '../../utils/userId';
 import './app.css';
 import Header from '../header/header';
@@ -12,25 +12,25 @@ import Profile from '../profile/profile';
 import Login from '../login/login';
 import Register from '../register/register';
 import Footer from '../footer/footer';
+import MenuModal from '../menu-modal/menu-modal';
 import NotFound from '../not-found/not-found';
-import * as authApi from '../../utils/authApi';
-import api from '../../utils/Api';
+import api from '../../utils/MainApi';
 
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const navigateRef = useRef(navigate);
   const [isLoggedIn, setisLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
   const [error, setError] = useState({});
   const [isSucsessed, setIsSucsessed] = useState(false);
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isHeaderVisible = ['/', '/movies', '/saved-movies', '/profile'].includes(location.pathname);
+  const isHeaderWhite = ['/profile', '/movies','/saved-movies'].includes(location.pathname);
   const isFooterVisible = ['/', '/movies', '/saved-movies'].includes(location.pathname);
 
   useEffect(() => {
@@ -47,16 +47,14 @@ function App() {
 
   const auth = useCallback(async () => {
     try {
-      const res = await authApi.getContent();
+      const res = await api.getContent();
       if (res) {
         setisLoggedIn(true);
-        setUserEmail(res.email);
-        navigate('/movies');
       }
     } catch (err) {
       console.log(err);
     }
-  }, [setisLoggedIn, setUserEmail, navigate]);
+  }, [setisLoggedIn]);
 
   useEffect(() => {
     const id = getId();
@@ -67,7 +65,7 @@ function App() {
   }, [auth]);
 
   const onRegister = (name, password, email) => {
-    return authApi.register(name, password, email).then((res) => {
+    return api.register(name, password, email).then((res) => {
       setIsSucsessed(true);
       navigate('/sign-in');
       return res;
@@ -78,7 +76,7 @@ function App() {
   }
 
   const onLogin = (password, email) => {
-    return authApi.authorize(password, email)
+    return api.authorize(password, email)
       .then((data) => {
         if (data._id) {
           setId(data._id);
@@ -96,23 +94,21 @@ function App() {
 
   const onSignOut = () => {
     removeId();
-    setUserEmail('');
     setisLoggedIn(false);
-    navigate('/login');
+    navigate('/sign-in');
   };
 
   function handleUpdateUser(data) {
     showLoader();
 
-    api.setUserInfo(data)
+    return api.setUserInfo(data)
       .then((data) => {
-        setCurrentUser(data);
+        removeLoader();
+        return data;
       })
       .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        removeLoader()
+        removeLoader();
+        throw error;
       });
   }
 
@@ -124,10 +120,26 @@ function App() {
     setIsLoading(false);
   }
 
+  // Для бокового меню
+
+  const hadndleMenuClose = () => {
+    setIsMenuOpen(false);
+  }
+
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      hadndleMenuClose();
+    }
+  };
+
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
-        {isHeaderVisible && <Header isLoggedIn={isLoggedIn} />}
+        {isHeaderVisible && <Header
+          isLoggedIn={isLoggedIn}
+          setIsMenuOpen={setIsMenuOpen}
+          isHeaderWhite={isHeaderWhite}
+        />}
         <Routes>
           <Route path={'/'} element={<Main />} />
           <Route path='/movies' element={<ProtectedRoute
@@ -141,6 +153,8 @@ function App() {
           <Route path='/profile' element={<ProtectedRoute
             loggedIn={isLoggedIn}
             element={Profile}
+            onSignOut={onSignOut}
+            handleUpdateUser={handleUpdateUser}
           />} />
           <Route path={'/sign-in'} element={<Login
             onLogin={onLogin}
@@ -153,6 +167,11 @@ function App() {
           <Route path={'*'} element={<NotFound />} />
         </Routes>
         {isFooterVisible && <Footer />}
+        <MenuModal
+          isMenuOpen={isMenuOpen}
+          onClose={hadndleMenuClose}
+          onOverlayClick={handleOverlayClick}
+        />
       </CurrentUserContext.Provider>
     </>
   );

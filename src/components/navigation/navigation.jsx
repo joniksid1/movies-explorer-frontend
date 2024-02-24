@@ -1,14 +1,12 @@
-import React from "react";
+import React from 'react';
 import Logo from '../../images/logo.svg';
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './navigation.css';
 import BurgerMenu from './burger-menu/burger-menu';
-import MenuModal from "./menu-modal/menu-modal";
 
-function Navigation({ isLoggedIn }) {
+function Navigation({ isLoggedIn, setIsMenuOpen }) {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -24,10 +22,6 @@ function Navigation({ isLoggedIn }) {
   const handleBurgerMenuClick = () => {
     setIsMenuOpen(true);
   };
-
-  const hadndleMenuClose = () => {
-    setIsMenuOpen(false);
-  }
 
   return (
     <>
@@ -97,10 +91,6 @@ function Navigation({ isLoggedIn }) {
           <BurgerMenu handleOpen={handleBurgerMenuClick} />
         )}
       </nav>
-      <MenuModal
-        isMenuOpen={isMenuOpen}
-        onClose={hadndleMenuClose}
-      />
     </>
   );
 }

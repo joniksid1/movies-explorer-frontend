@@ -1,6 +1,6 @@
 import React from 'react';
 import './movies-card-list.css';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import MoviesCard from '../movies-card/movies-card';
 
 function MoviesCardList() {

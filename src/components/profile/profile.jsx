@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './profile.css';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
+import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Profile() {
+function Profile({ onSignOut, handleUpdateUser }) {
+  const currentUser = useContext(CurrentUserContext);
+  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [serverError, setServerError] = useState('');
+
+  // При монтировании компонента, устанавливаем начальные значения полей
+  useEffect(() => {
+    resetForm({ name: currentUser.name, email: currentUser.email }, {}, true);
+  }, [currentUser, resetForm]);
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    setServerError('');
+    if (isValid) {
+      handleUpdateUser(values)
+        .then((data) => {
+          setIsEditing(false);
+        })
+        .catch(error => {
+          setServerError(error.message);
+        });
+    }
+  };
+
+  const handleLogout = () => {
+    onSignOut();
+  };
 
   return (
     <main className='profile'>
       <h1 className='profile__title'>
-        Привет, Виталий!
+        Привет, {currentUser.name}!
       </h1>
       <form className='profile__form'>
         <div className='profile__wrapper'>
@@ -14,11 +46,18 @@ function Profile() {
             Имя
           </label>
           <input
-            placeholder='Виталий'
+            required
+            minLength={2}
+            maxLength={30}
+            placeholder='Введите имя'
             name='name'
             type='text'
             className='profile__input'
+            value={values.name || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
           />
+          <span className='profile__error'>{errors.name}</span>
         </div>
         <div className='profile__wrapper'>
           <label className='profile__label'>
@@ -26,29 +65,51 @@ function Profile() {
           </label>
           <input
             required
-            placeholder='pochta@yandex.ru'
+            placeholder={currentUser.email}
             name='email'
             type='email'
+            maxLength={65}
             className='profile__input profile__input_type_email'
+            value={values.email || ''}
+            onChange={handleChange}
+            disabled={!isEditing}
           />
+          <span className='profile__error'>{errors.email}</span>
         </div>
       </form>
       <div className='profile__button-wrapper'>
-        <button
-          type='button'
-          className='profile__button'
-        >
-          Редактировать
-        </button>
-        <button
-          type='button'
-          className='profile__button'
-        >
-          Выйти из аккаунта
-        </button>
+        {serverError && <span className='profile__error'>{serverError}</span>}
+        {isEditing ? (
+          <button
+            type='button'
+            className='profile__button profile__save-button'
+            onClick={handleSaveClick}
+            disabled={!isValid}
+          >
+            Сохранить
+          </button>
+        ) : (
+          <>
+            <button
+              type='button'
+              className='profile__button'
+              onClick={handleEditClick}
+            >
+              Редактировать
+            </button>
+            <button
+              type='button'
+              className='profile__button profile__button_red'
+              onClick={handleLogout}
+            >
+              Выйти из аккаунта
+            </button>
+          </>
+        )}
       </div>
     </main>
   );
 }
+
 
 export default Profile;

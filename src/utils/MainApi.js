@@ -1,4 +1,4 @@
-import { apiOptions } from './constants.js';
+import apiOptions from './constants.js';
 
 class Api {
   constructor({ url, headers }) {
@@ -22,9 +22,46 @@ class Api {
       })
   }
 
+  register(name, password, email) {
+    return this._getRequest(`${this._url}/signup`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, password, email })
+    })
+  };
+
+  authorize(password, email) {
+    return this._getRequest(`${this._url}/signin`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password, email })
+    })
+  };
+
+  getContent(token) {
+    return this._getRequest(`${this._url}/users/me`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+  };
+
   getUserInfo() {
     return this._getRequest(`${this._url}/users/me`, {
       method: 'GET',
+      credentials: 'include',
       headers: this._headers
     })
   }
@@ -32,21 +69,11 @@ class Api {
   setUserInfo(data) {
     return this._getRequest(`${this._url}/users/me`, {
       method: 'PATCH',
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
-        about: data.about
-      }),
-    }
-    )
-  }
-
-  changeAvatar({avatar}) {
-    return this._getRequest(`${this._url}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        avatar: avatar,
+        email: data.email
       }),
     }
     )
@@ -55,6 +82,7 @@ class Api {
   getInitialCards() {
     return this._getRequest(`${this._url}/cards`, {
       method: 'GET',
+      credentials: 'include',
       headers: this._headers
     })
   }
@@ -62,15 +90,9 @@ class Api {
   createCard(data) {
     return this._getRequest(`${this._url}/cards`, {
       method: 'POST',
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify(data)
-    })
-  }
-
-  deleteCard(id) {
-    return this._getRequest(`${this._url}/cards/${id}`, {
-      method: 'DELETE',
-      headers: this._headers
     })
   }
 
