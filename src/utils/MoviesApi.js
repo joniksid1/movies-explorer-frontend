@@ -1,4 +1,4 @@
-import { moviesApiOptions } from './constants.js';
+import { MOVIES_API_BASE_URL, moviesApiOptions } from "./constants";
 
 class Api {
   constructor({ url, headers }) {
@@ -19,7 +19,7 @@ class Api {
             throw errorWithStatus;
           });
         }
-      })
+      });
   }
 
   getMovies() {
@@ -29,9 +29,26 @@ class Api {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       }
-    })
-  };
+    }).then((movies) => {
+      return movies.map((item) => {
+        return {
+          country: item.country,
+          director: item.director,
+          duration: item.duration,
+          year: item.year,
+          description: item.description,
+          trailerLink: item.trailerLink,
+          nameRU: item.nameRU,
+          nameEN: item.nameEN,
+          image: `${MOVIES_API_BASE_URL}${item.image.url}`,
+          movieId: item.id,
+          thumbnail: `${MOVIES_API_BASE_URL}${item.image.formats.thumbnail.url}`
+        };
+      });
+    });
+  }
 }
+
 
 const moviesApi = new Api(moviesApiOptions);
 

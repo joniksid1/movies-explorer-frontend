@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import './filter-checkbox/filter-checkbox.css';
 import './search-form.css';
 import FilterCheckbox from './filter-checkbox/filter-checkbox';
 import { useFormWithValidation } from '../../../hooks/useFormWithValidation';
 
-function SearchForm({ onSubmit }) {
-  const { values, handleChange, errors, setErrors } = useFormWithValidation();
+function SearchForm({ onSubmit, loadSearchStateFromLocalStorage }) {
+  const [isChecked, setIsChecked] = useState(false);
+  const { values, setValues, handleChange, errors, setErrors } = useFormWithValidation();
+
+  const handleLoadSearchStateFromLocalStorage = useCallback(() => {
+    return loadSearchStateFromLocalStorage();
+  }, [loadSearchStateFromLocalStorage]);
+
+  useEffect(() => {
+    const searchState = handleLoadSearchStateFromLocalStorage();
+    if (searchState) {
+      setIsChecked(searchState.isChecked || false);
+      setValues({ ...values, name: searchState.query || '' });
+    }
+  }, [setValues]);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -18,10 +36,10 @@ function SearchForm({ onSubmit }) {
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      film: '', // Очищаем ошибку поля film
+      film: '',
     }));
 
-    onSubmit();
+    onSubmit(values.name, isChecked);
   };
 
   return (
@@ -44,7 +62,10 @@ function SearchForm({ onSubmit }) {
           />
         </div>
         {errors.film && <span className='search-form__error'>{errors.film}</span>}
-        <FilterCheckbox />
+        <FilterCheckbox
+          isChecked={isChecked}
+          handleCheckboxChange={handleCheckboxChange}
+        />
       </form>
     </section>
   );

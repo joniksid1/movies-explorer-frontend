@@ -79,16 +79,16 @@ class Api {
     )
   }
 
-  getInitialCards() {
-    return this._getRequest(`${this._url}/cards`, {
-      method: 'GET',
+  getSavedMovies() {
+    return this._getRequest(`${this._url}/movies`, {
+      method: 'get',
       credentials: 'include',
-      headers: this._headers
+      headers: this._headers,
     })
   }
 
-  createCard(data) {
-    return this._getRequest(`${this._url}/cards`, {
+  saveMovie(data) {
+    return this._getRequest(`${this._url}/movies`, {
       method: 'POST',
       credentials: 'include',
       headers: this._headers,
@@ -96,16 +96,12 @@ class Api {
     })
   }
 
-  setlike(id, isLiked) {
-    return isLiked
-      ? this._getRequest(`${this._url}/cards/${id}/likes`, {
-        method: 'PUT',
-        headers: this._headers,
-      })
-      : this._getRequest(`${this._url}/cards/${id}/likes`, {
-        method: 'DELETE',
-        headers: this._headers,
-      });
+  deleteMovie(id) {
+    return this._getRequest(`${this._url}/movies/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: this._headers,
+    });
   }
 
 }

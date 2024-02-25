@@ -15,7 +15,8 @@ import Footer from '../footer/footer';
 import MenuModal from '../menu-modal/menu-modal';
 import NotFound from '../not-found/not-found';
 import api from '../../utils/MainApi';
-
+import moviesApi from '../../utils/MoviesApi';
+import { ERROR_TEXT } from '../../utils/constants';
 
 function App() {
   const location = useLocation();
@@ -23,12 +24,15 @@ function App() {
   const [isLoggedIn, setisLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setError] = useState(null);
   const [isSucsessed, setIsSucsessed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [savedMovies, setSavedMovies] = useState([]);
+  const [shouldLoadAndSyncMovies, setShouldLoadAndSyncMovies] = useState(false);
 
   const isHeaderVisible = ['/', '/movies', '/saved-movies', '/profile'].includes(location.pathname);
-  const isHeaderWhite = ['/profile', '/movies','/saved-movies'].includes(location.pathname);
+  const isHeaderWhite = ['/profile', '/movies', '/saved-movies'].includes(location.pathname);
   const isFooterVisible = ['/', '/movies', '/saved-movies'].includes(location.pathname);
 
   useEffect(() => {
@@ -92,31 +96,21 @@ function App() {
 
   const onSignOut = () => {
     removeId();
+    localStorage.clear();
     setisLoggedIn(false);
     navigate('/sign-in');
   };
 
   function handleUpdateUser(data) {
-    showLoader();
 
     return api.setUserInfo(data)
       .then((data) => {
         setCurrentUser(data);
-        removeLoader();
         return data;
       })
       .catch((error) => {
-        removeLoader();
         throw error;
       });
-  }
-
-  function showLoader() {
-    setIsLoading(true);
-  }
-
-  function removeLoader() {
-    setIsLoading(false);
   }
 
   // Для бокового меню
@@ -131,6 +125,97 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    api.getSavedMovies()
+      .then((data) => {
+        setSavedMovies(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const fetchMovies = async (query, isChecked) => {
+    try {
+      setIsLoading(true);
+      const moviesData = await moviesApi.getMovies();
+      setMovies(moviesData);
+      saveMoviesToLocalStorage(moviesData);
+      const searchState = { query, isChecked };
+      saveSearchStateToLocalStorage(searchState);
+      loadAndSyncMovies();
+      if (!moviesData) {
+        setError('Ничего не найдено');
+      }
+    } catch (error) {
+      console.log(error);
+      setError(ERROR_TEXT);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveSearchStateToLocalStorage = (searchState) => {
+    localStorage.setItem('searchState', JSON.stringify(searchState));
+  };
+
+  const loadSearchStateFromLocalStorage = () => {
+    const storedSearchState = localStorage.getItem('searchState');
+    return storedSearchState ? JSON.parse(storedSearchState) : {};
+  };
+
+  const saveMoviesToLocalStorage = (moviesData) => {
+    localStorage.setItem('movies', JSON.stringify(moviesData));
+  };
+
+  const loadMoviesFromLocalStorage = () => {
+    const storedMovies = localStorage.getItem('movies');
+    return storedMovies ? JSON.parse(storedMovies) : [];
+  };
+
+  // Функция для сравнения сохраненных фильмов с фильмами из локального хранилища
+  const syncSavedMoviesWithLocalStorage = (savedMovies, localStorageMovies) => {
+    const syncedMovies = localStorageMovies.map(localStorageMovie => {
+      const savedMovie = savedMovies.find(savedMovie => savedMovie.nameRU === localStorageMovie.nameRU);
+      if (savedMovie) {
+        localStorageMovie._id = savedMovie._id;
+        localStorageMovie.owner = savedMovie.owner;
+      }
+      return localStorageMovie;
+    });
+    return syncedMovies;
+  };
+
+  // Функция для загрузки фильмов из локального хранилища, сравнения с сохраненными и обновления состояния
+  const loadAndSyncMovies = () => {
+    const localStorageMovies = loadMoviesFromLocalStorage();
+    const syncedMovies = syncSavedMoviesWithLocalStorage(savedMovies, localStorageMovies);
+    setMovies(syncedMovies);
+  };
+
+  const saveMovie = async (movie) => {
+    try {
+      const savedMovie = await api.saveMovie(movie);
+      const updatedSavedMovies = [...savedMovies, savedMovie];
+      setSavedMovies(updatedSavedMovies);
+      setShouldLoadAndSyncMovies(true);
+    } catch (error) {
+      console.log(error);
+      setError(ERROR_TEXT);
+    }
+  }
+
+  const deleteMovie = async (movie) => {
+    try {
+      await api.deleteMovie(movie._id);
+      setSavedMovies((state) => state.filter((item) => item._id !== movie._id));
+      setShouldLoadAndSyncMovies(true);
+    } catch (error) {
+      console.log(error);
+      setError(ERROR_TEXT);
+    }
+  }
+
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
@@ -143,11 +228,27 @@ function App() {
           <Route path={'/'} element={<Main />} />
           <Route path='/movies' element={<ProtectedRoute
             loggedIn={isLoggedIn}
+            fetchMovies={fetchMovies}
+            isLoading={isLoading}
+            movies={movies}
+            saveMovie={saveMovie}
+            deleteMovie={deleteMovie}
+            setMovies={setMovies}
+            loadMoviesFromLocalStorage={loadMoviesFromLocalStorage}
+            loadSearchStateFromLocalStorage={loadSearchStateFromLocalStorage}
+            loadAndSyncMovies={loadAndSyncMovies}
+            error={error}
             element={Movies}
+            shouldLoadAndSyncMovies={shouldLoadAndSyncMovies}
+            setShouldLoadAndSyncMovies={setShouldLoadAndSyncMovies}
           />} />
           <Route path='/saved-movies' element={<ProtectedRoute
             loggedIn={isLoggedIn}
+            isLoading={isLoading}
+            savedMovies={savedMovies}
+            deleteMovie={deleteMovie}
             element={SavedMovies}
+            error={error}
           />} />
           <Route path='/profile' element={<ProtectedRoute
             loggedIn={isLoggedIn}

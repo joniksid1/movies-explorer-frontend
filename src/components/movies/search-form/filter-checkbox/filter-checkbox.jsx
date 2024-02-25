@@ -1,12 +1,6 @@
-import React, { useState } from 'react';
-import './filter-checkbox.css';
+import React from 'react';
 
-function FilterCheckbox() {
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
+function FilterCheckbox({ isChecked, handleCheckboxChange }) {
 
   return (
     <div className='search-form__input-container search-form__input-container_type_checkbox'>

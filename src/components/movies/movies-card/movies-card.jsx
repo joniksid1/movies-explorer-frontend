@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './movies-card.css';
+import CurrentUserContext from '../../../contexts/CurrentUserContext';
 
-function MoviesCard({ movie }) {
+function MoviesCard({ movie, saveMovie, deleteMovie }) {
+  const currentUser = useContext(CurrentUserContext);
+  const [activeClassName, setActiveClassName] = useState('');
 
-  const imageUrl = `https://api.nomoreparties.co${movie.image.url}`
-  const [activeClassName, setActiveClassName] = useState('')
+  useEffect(() => {
+    if (movie.owner) {
+      setActiveClassName('movies-card__button_active');
+    } else {
+      setActiveClassName('');
+    }
+  }, [movie.owner]);
 
   const movieDuration = () => {
     const hours = Math.floor(movie.duration / 60);
@@ -12,8 +20,14 @@ function MoviesCard({ movie }) {
     return `${hours}ч ${minutes}м`;
   }
 
-  const handleSaveClick = () => {
-    setActiveClassName('movies-card__button_active');
+  const handleSaveClick = async () => {
+    if (movie.owner) {
+      delete movie.owner;
+      await deleteMovie(movie);
+    } else {
+      movie.owner = currentUser._id;
+      await saveMovie(movie);
+    }
   }
 
   return (
@@ -28,7 +42,7 @@ function MoviesCard({ movie }) {
         />
         <a href={movie.trailerLink} target='_blank' rel='noopener noreferrer'>
           <img
-            src={imageUrl}
+            src={movie.image}
             alt='Промо-изображение фильма'
             className='movies-card__image'
           />
