@@ -29,6 +29,8 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
+  const [searchedSavedMovies, setSearchedSavedMovies] = useState([]);
+  const [isSearchPerformed, setIsSearchPerformed] = useState(false);
   const [shouldLoadAndSyncMovies, setShouldLoadAndSyncMovies] = useState(false);
 
   const isHeaderVisible = ['/', '/movies', '/saved-movies', '/profile'].includes(location.pathname);
@@ -102,7 +104,6 @@ function App() {
   };
 
   function handleUpdateUser(data) {
-
     return api.setUserInfo(data)
       .then((data) => {
         setCurrentUser(data);
@@ -126,31 +127,80 @@ function App() {
   };
 
   useEffect(() => {
-    api.getSavedMovies()
-      .then((data) => {
-        setSavedMovies(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // При первом заходе на страницу, загружаем сохраненные фильмы с бэкенда
+      api.getSavedMovies()
+        .then((data) => {
+          setSavedMovies(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   }, []);
 
-  const fetchMovies = async (query, isChecked) => {
+  useEffect(() => {
+    // При первом заходе на страницу saved-movies, очищаем ошибку и поиск по сохранённым фильмам, отображение найденных фильмов
+    if (location.pathname === '/saved-movies') {
+      setError(null);
+      setSearchedSavedMovies([]);
+      setIsSearchPerformed(false);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    // При первом заходе на страницу movies, очищаем ошибку и синхронизируем фильмы с сохранёнными
+    if (location.pathname === '/movies') {
+      setError(null);
+      setShouldLoadAndSyncMovies(true);
+    }
+  }, [location.pathname]);
+
+  const filterMovies = (movies, query, isChecked) => {
+    const request = query.trim().toLowerCase();
+    return movies.filter((movie) => {
+      const russianName = movie.nameRU.toLowerCase();
+      const englishName = movie.nameEN.toLowerCase();
+      const includesQuery = russianName.includes(request) || englishName.includes(request);
+      const meetsDuration = isChecked ? movie.duration <= 40 : true;
+      return includesQuery && meetsDuration;
+    });
+  };
+
+  const searchSavedMovies = (query, isChecked) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const moviesData = await moviesApi.getMovies();
-      setMovies(moviesData);
-      saveMoviesToLocalStorage(moviesData);
-      const searchState = { query, isChecked };
-      saveSearchStateToLocalStorage(searchState);
-      loadAndSyncMovies();
-      if (!moviesData) {
+      setError(null);
+      const filtered = filterMovies(savedMovies, query, isChecked);
+      setSearchedSavedMovies(filtered);
+      if (!filtered.length) {
         setError('Ничего не найдено');
       }
     } catch (error) {
       console.log(error);
       setError(ERROR_TEXT);
     } finally {
+      setIsLoading(false);
+      setIsSearchPerformed(true);
+    }
+  };
+
+  const fetchMovies = async (query, isChecked) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const moviesData = await moviesApi.getMovies();
+      let filteredMovies = filterMovies(moviesData, query, isChecked);
+      setMovies(filteredMovies);
+      saveMoviesToLocalStorage(filteredMovies);
+      const searchState = { query, isChecked };
+      saveSearchStateToLocalStorage(searchState);
+      if (!filteredMovies.length) {
+        setError('Ничего не найдено');
+      }
+    } catch (error) {
+      console.log(error);
+      setError(ERROR_TEXT);
+    } finally {
+      setShouldLoadAndSyncMovies(true);
       setIsLoading(false);
     }
   };
@@ -208,7 +258,12 @@ function App() {
   const deleteMovie = async (movie) => {
     try {
       await api.deleteMovie(movie._id);
-      setSavedMovies((state) => state.filter((item) => item._id !== movie._id));
+      const updatedSavedMovies = savedMovies.filter((item) => item._id !== movie._id);
+      setSavedMovies(updatedSavedMovies);
+      if (searchedSavedMovies.length > 0) {
+        const updatedSearchedSavedMovies = searchedSavedMovies.filter((item) => item._id !== movie._id);
+        setSearchedSavedMovies(updatedSearchedSavedMovies);
+      }
       setShouldLoadAndSyncMovies(true);
     } catch (error) {
       console.log(error);
@@ -246,9 +301,12 @@ function App() {
             loggedIn={isLoggedIn}
             isLoading={isLoading}
             savedMovies={savedMovies}
+            searchedSavedMovies={searchedSavedMovies}
             deleteMovie={deleteMovie}
-            element={SavedMovies}
+            searchSavedMovies={searchSavedMovies}
+            isSearchPerformed={isSearchPerformed}
             error={error}
+            element={SavedMovies}
           />} />
           <Route path='/profile' element={<ProtectedRoute
             loggedIn={isLoggedIn}
@@ -277,4 +335,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import './filter-checkbox/filter-checkbox.css';
 import './search-form.css';
 import FilterCheckbox from './filter-checkbox/filter-checkbox';
 import { useFormWithValidation } from '../../../hooks/useFormWithValidation';
 
-function SearchForm({ onSubmit, loadSearchStateFromLocalStorage }) {
+function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovies }) {
+  const location = useLocation();
+  const isSavedMovies = ['/saved-movies'].includes(location.pathname);
+
   const [isChecked, setIsChecked] = useState(false);
   const { values, setValues, handleChange, errors, setErrors } = useFormWithValidation();
 
@@ -39,7 +43,11 @@ function SearchForm({ onSubmit, loadSearchStateFromLocalStorage }) {
       film: '',
     }));
 
-    onSubmit(values.name, isChecked);
+    if (isSavedMovies) {
+      searchSavedMovies(values.name, isChecked);
+    } else {
+      onSubmit(values.name, isChecked);
+    }
   };
 
   return (
