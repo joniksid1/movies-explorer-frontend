@@ -7,7 +7,8 @@ const ERROR_TEXT = `
 `
 
 const apiOptions = {
-  url: 'http://localhost:3001',
+  // url: 'http://localhost:3001',
+  url: 'https://api.joniksid.nomoredomainsmonster.ru',
   headers: {
     'Content-Type': 'application/json',
   },
