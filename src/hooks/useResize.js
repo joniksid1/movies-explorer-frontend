@@ -8,8 +8,10 @@ export const useResize = (cardsPerPage) => {
       const width = window.innerWidth;
       if (width >= 320 && width < 768) {
         setCardsToAdd(2);
-      } else {
-        setCardsToAdd(cardsPerPage);
+      } else if (width >= 768 && width < 1280) {
+        setCardsToAdd(2);
+      } else if (width >= 1280) {
+        setCardsToAdd(3);
       }
     };
 

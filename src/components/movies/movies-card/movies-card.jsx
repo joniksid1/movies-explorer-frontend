@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './movies-card.css';
 import CurrentUserContext from '../../../contexts/CurrentUserContext';
 
-function MoviesCard({ movie, saveMovie, deleteMovie }) {
+function MoviesCard({ movie, saveMovie, deleteMovie, isSavedMoviesPage }) {
   const currentUser = useContext(CurrentUserContext);
   const [activeClassName, setActiveClassName] = useState('');
 
@@ -37,7 +37,7 @@ function MoviesCard({ movie, saveMovie, deleteMovie }) {
         <p className='movies-card__text'>{movieDuration()}</p>
         <button
           type='button'
-          className={`movies-card__button ${activeClassName}`}
+          className={`movies-card__button ${isSavedMoviesPage ? 'movies-card__delete-button' : activeClassName}`}
           onClick={handleSaveClick}
         />
         <a href={movie.trailerLink} target='_blank' rel='noopener noreferrer'>

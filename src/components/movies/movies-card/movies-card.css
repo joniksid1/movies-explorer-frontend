@@ -55,6 +55,11 @@
   opacity: .8;
 }
 
+.movies-card__delete-button {
+  background-image: url(../../../images/cross.svg);
+  background-size: 8px 8px;
+}
+
 .movies-card__image {
   display: block;
   width: 364px;

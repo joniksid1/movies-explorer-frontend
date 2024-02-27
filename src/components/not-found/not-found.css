@@ -24,11 +24,14 @@
 
 .not-found__link {
   margin: 0;
-  text-decoration: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
   font-size: 14px;
   font-weight: 400;
   line-height: 17px;
   color: #FF6838;
+  cursor: pointer;
 }
 
 .not-found__link:hover {

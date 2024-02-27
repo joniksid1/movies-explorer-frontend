@@ -14,6 +14,7 @@ import Register from '../register/register';
 import Footer from '../footer/footer';
 import MenuModal from '../menu-modal/menu-modal';
 import NotFound from '../not-found/not-found';
+import InfoToolTip from '../info-tool-tip/info-tool-tip';
 import api from '../../utils/MainApi';
 import moviesApi from '../../utils/MoviesApi';
 import { ERROR_TEXT } from '../../utils/constants';
@@ -21,10 +22,12 @@ import { ERROR_TEXT } from '../../utils/constants';
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isToolTipOpen, setIsToolTipOpen] = useState(false);
+  const [action, setAction] = useState('');
   const [isSucsessed, setIsSucsessed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [movies, setMovies] = useState([]);
@@ -53,12 +56,12 @@ function App() {
     try {
       const res = await api.getContent();
       if (res) {
-        setisLoggedIn(true);
+        setIsLoggedIn(true);
       }
     } catch (err) {
       console.log(err);
     }
-  }, [setisLoggedIn]);
+  }, [setIsLoggedIn]);
 
   useEffect(() => {
     const id = getId();
@@ -68,15 +71,24 @@ function App() {
     }
   }, [auth]);
 
-  const onRegister = (name, password, email) => {
-    return api.register(name, password, email).then((res) => {
+  const onRegister = async (name, password, email) => {
+    try {
+      const res = await api.register(name, password, email);
       setIsSucsessed(true);
-      navigate('/sign-in');
+      const data = await api.authorize(password, email);
+      if (data._id) {
+        setId(data._id);
+        setIsLoggedIn(true);
+        setAction('зарегистрировались и авторизовались');
+      }
+      navigate('/movies');
+      setIsToolTipOpen(true);
       return res;
-    }).catch((error) => {
+    } catch (error) {
       setIsSucsessed(false);
       setError(error);
-    })
+      setIsToolTipOpen(true);
+    }
   }
 
   const onLogin = (password, email) => {
@@ -84,8 +96,11 @@ function App() {
       .then((data) => {
         if (data._id) {
           setId(data._id);
-          setisLoggedIn(true);
-          navigate('/');
+          setIsLoggedIn(true);
+          setIsSucsessed(true);
+          setAction('авторизовались');
+          navigate('/movies');
+          setIsToolTipOpen(true);
           return data;
         } else {
           return;
@@ -93,14 +108,15 @@ function App() {
       }).catch((error) => {
         setIsSucsessed(false);
         setError(error);
+        setIsToolTipOpen(true);
       })
   }
 
   const onSignOut = () => {
     removeId();
     localStorage.clear();
-    setisLoggedIn(false);
-    navigate('/sign-in');
+    setIsLoggedIn(false);
+    navigate('/');
   };
 
   function handleUpdateUser(data) {
@@ -123,18 +139,19 @@ function App() {
   const handleOverlayClick = (event) => {
     if (event.target === event.currentTarget) {
       hadndleMenuClose();
+      closeToolTip();
     }
   };
 
   useEffect(() => {
     // При первом заходе на страницу, загружаем сохраненные фильмы с бэкенда
-      api.getSavedMovies()
-        .then((data) => {
-          setSavedMovies(data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    api.getSavedMovies()
+      .then((data) => {
+        setSavedMovies(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
@@ -271,6 +288,12 @@ function App() {
     }
   }
 
+  const closeToolTip = () => {
+    setIsToolTipOpen(false);
+    setError(null);
+    setAction('');
+  }
+
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
@@ -293,9 +316,9 @@ function App() {
             loadSearchStateFromLocalStorage={loadSearchStateFromLocalStorage}
             loadAndSyncMovies={loadAndSyncMovies}
             error={error}
-            element={Movies}
             shouldLoadAndSyncMovies={shouldLoadAndSyncMovies}
             setShouldLoadAndSyncMovies={setShouldLoadAndSyncMovies}
+            element={Movies}
           />} />
           <Route path='/saved-movies' element={<ProtectedRoute
             loggedIn={isLoggedIn}
@@ -313,6 +336,9 @@ function App() {
             element={Profile}
             onSignOut={onSignOut}
             handleUpdateUser={handleUpdateUser}
+            setIsSucsessed={setIsSucsessed}
+            setAction={setAction}
+            setIsToolTipOpen={setIsToolTipOpen}
           />} />
           <Route path={'/sign-in'} element={<Login
             onLogin={onLogin}
@@ -329,6 +355,14 @@ function App() {
           isMenuOpen={isMenuOpen}
           onClose={hadndleMenuClose}
           onOverlayClick={handleOverlayClick}
+        />
+        <InfoToolTip
+          isSucsessed={isSucsessed}
+          isOpen={isToolTipOpen}
+          onClose={closeToolTip}
+          onOverlayClick={handleOverlayClick}
+          error={error}
+          action={action}
         />
       </CurrentUserContext.Provider>
     </>

@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
+import { validateEmail } from '../utils/validateEmail';
 
 export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
@@ -10,11 +11,19 @@ export function useFormWithValidation() {
     const name = target.name;
     const value = target.value;
     setValues({...values, [name]: value});
-    setErrors({...errors, [name]: target.validationMessage });
+
+    // Проверка валидности email
+    if (name === 'email') {
+      const isValidEmail = validateEmail(value);
+      setErrors({...errors, [name]: isValidEmail ? '' : 'Некорректный формат email'});
+    } else {
+      setErrors({...errors, [name]: target.validationMessage });
+    }
+
     setIsValid(target.closest('form').checkValidity());
   };
 
-  const resetForm = useCallback(
+  const resetForm = React.useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
       setValues(newValues);
       setErrors(newErrors);

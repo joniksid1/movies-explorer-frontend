@@ -3,27 +3,45 @@ import './profile.css';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 
-function Profile({ onSignOut, handleUpdateUser }) {
+function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIsToolTipOpen }) {
   const currentUser = useContext(CurrentUserContext);
   const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
   const [isEditing, setIsEditing] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [isDataChanged, setIsDataChanged] = useState(false);
 
   // При монтировании компонента, устанавливаем начальные значения полей
   useEffect(() => {
     resetForm({ name: currentUser.name, email: currentUser.email }, {}, true);
   }, [currentUser, resetForm]);
 
+  // Обновляем флаг isDataChanged при изменении значений в форме
+  useEffect(() => {
+    if (values.name !== currentUser.name || values.email !== currentUser.email) {
+      setIsDataChanged(true);
+    } else {
+      setIsDataChanged(false);
+    }
+  }, [values, currentUser]);
+
   const handleEditClick = () => {
     setIsEditing(true);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    resetForm({ name: currentUser.name, email: currentUser.email }, {}, true);
   };
 
   const handleSaveClick = () => {
     setServerError('');
     if (isValid) {
       handleUpdateUser(values)
-        .then((data) => {
+        .then(() => {
           setIsEditing(false);
+          setIsSucsessed(true);
+          setAction('отредактировали профиль');
+          setIsToolTipOpen(true);
         })
         .catch(error => {
           setServerError(error.message);
@@ -80,14 +98,23 @@ function Profile({ onSignOut, handleUpdateUser }) {
       <div className='profile__button-wrapper'>
         {serverError && <span className='profile__error'>{serverError}</span>}
         {isEditing ? (
-          <button
-            type='button'
-            className='profile__button profile__save-button'
-            onClick={handleSaveClick}
-            disabled={!isValid}
-          >
-            Сохранить
-          </button>
+          <>
+            <button
+              type='button'
+              className='profile__button profile__save-button'
+              onClick={handleSaveClick}
+              disabled={!isValid || !isDataChanged}
+            >
+              Сохранить
+            </button>
+            <button
+              type='button'
+              className='profile__button profile__button_red'
+              onClick={handleCancelClick}
+            >
+              Отменить
+            </button>
+          </>
         ) : (
           <>
             <button
@@ -110,6 +137,5 @@ function Profile({ onSignOut, handleUpdateUser }) {
     </main>
   );
 }
-
 
 export default Profile;
