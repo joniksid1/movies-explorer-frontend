@@ -18,17 +18,17 @@ function MoviesCardList({ movies, saveMovie, deleteMovie }) {
     <section className='movies-card-list'>
       <ul className='movies-card-list__list'>
         {isSavedMoviesPage
-          ? movies.map((movie, index) => (
+          ? movies.map((movie) => (
               <MoviesCard
-                key={index}
+                key={movie.movieId}
                 movie={movie}
                 deleteMovie={deleteMovie}
                 isSavedMoviesPage={isSavedMoviesPage}
               />
             ))
-          : movies.slice(0, visibleCards).map((movie, index) => (
+          : movies.slice(0, visibleCards).map((movie) => (
               <MoviesCard
-                key={index}
+                key={movie.movieId}
                 movie={movie}
                 saveMovie={saveMovie}
                 deleteMovie={deleteMovie}

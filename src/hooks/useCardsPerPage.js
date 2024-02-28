@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react';
+import {
+  LAPTOP_FILMS_AMOUNT,
+  TABLET_FILMS_AMOUNT,
+  MOBILE_FILMS_AMOUNT,
+  DESKTOP_WIDTH,
+  TABLET_WIDTH,
+  MOBILE_WIDTH,
+} from '../utils/constants';
 
 export function useCardsPerPage() {
   const [cardsPerPage, setCardsPerPage] = useState(0);
@@ -6,12 +14,12 @@ export function useCardsPerPage() {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width >= 1280) {
-        setCardsPerPage(12);
-      } else if (width >= 768) {
-        setCardsPerPage(8);
-      } else if (width >= 320) {
-        setCardsPerPage(5);
+      if (width >= DESKTOP_WIDTH) {
+        setCardsPerPage(LAPTOP_FILMS_AMOUNT);
+      } else if (width >= TABLET_WIDTH) {
+        setCardsPerPage(TABLET_FILMS_AMOUNT);
+      } else if (width >= MOBILE_WIDTH) {
+        setCardsPerPage(MOBILE_FILMS_AMOUNT);
       }
     };
 

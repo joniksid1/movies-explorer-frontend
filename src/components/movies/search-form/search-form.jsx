@@ -5,7 +5,7 @@ import './search-form.css';
 import FilterCheckbox from './filter-checkbox/filter-checkbox';
 import { useFormWithValidation } from '../../../hooks/useFormWithValidation';
 
-function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovies }) {
+function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovies, isLoading }) {
   const location = useLocation();
   const isSavedMovies = ['/saved-movies'].includes(location.pathname);
 
@@ -62,17 +62,20 @@ function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovi
             className='search-form__input'
             value={values.name || ''}
             onChange={handleChange}
+            disabled={isLoading}
           />
           <label className='search-form__icon' />
           <button
             type='submit'
             className='search-form__button'
+            disabled={isLoading}
           />
         </div>
         {errors.film && <span className='search-form__error'>{errors.film}</span>}
         <FilterCheckbox
           isChecked={isChecked}
           handleCheckboxChange={handleCheckboxChange}
+          isLoading={isLoading}
         />
       </form>
     </section>

@@ -37,6 +37,7 @@ function Movies({
       <SearchForm
         onSubmit={fetchMovies}
         loadSearchStateFromLocalStorage={loadSearchStateFromLocalStorage}
+        isLoading={isLoading}
       />
       {isLoading && <Preloader />}
       {error && <div className='movies__error-wrapper'>

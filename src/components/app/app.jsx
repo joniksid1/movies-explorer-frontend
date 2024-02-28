@@ -17,7 +17,7 @@ import NotFound from '../not-found/not-found';
 import InfoToolTip from '../info-tool-tip/info-tool-tip';
 import api from '../../utils/MainApi';
 import moviesApi from '../../utils/MoviesApi';
-import { ERROR_TEXT } from '../../utils/constants';
+import { ERROR_TEXT, SHORTFILM_DURATION } from '../../utils/constants';
 
 function App() {
   const location = useLocation();
@@ -31,6 +31,8 @@ function App() {
   const [isSucsessed, setIsSucsessed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [isMoviesLoaded, setIsMoviesLoaded] = useState(false);
+  const [allMovies, setAllMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
   const [searchedSavedMovies, setSearchedSavedMovies] = useState([]);
   const [isSearchPerformed, setIsSearchPerformed] = useState(false);
@@ -177,7 +179,7 @@ function App() {
       const russianName = movie.nameRU.toLowerCase();
       const englishName = movie.nameEN.toLowerCase();
       const includesQuery = russianName.includes(request) || englishName.includes(request);
-      const meetsDuration = isChecked ? movie.duration <= 40 : true;
+      const meetsDuration = isChecked ? movie.duration <= SHORTFILM_DURATION : true;
       return includesQuery && meetsDuration;
     });
   };
@@ -204,12 +206,25 @@ function App() {
     try {
       setError(null);
       setIsLoading(true);
-      const moviesData = await moviesApi.getMovies();
-      let filteredMovies = filterMovies(moviesData, query, isChecked);
+      let moviesData;
+      const moviesCopy = allMovies;
+
+      // Проверяем, были ли данные о фильмах уже загружены
+      if (!isMoviesLoaded) {
+        moviesData = await moviesApi.getMovies();
+        setAllMovies(moviesData);
+        setMovies(moviesData);
+      }
+
+      // Используем movies для фильтрации, если данные уже загружены
+      let moviesToFilter = isMoviesLoaded ? moviesCopy : moviesData;
+      let filteredMovies = filterMovies(moviesToFilter, query, isChecked);
       setMovies(filteredMovies);
       saveMoviesToLocalStorage(filteredMovies);
+
       const searchState = { query, isChecked };
       saveSearchStateToLocalStorage(searchState);
+
       if (!filteredMovies.length) {
         setError('Ничего не найдено');
       }
@@ -219,6 +234,7 @@ function App() {
     } finally {
       setShouldLoadAndSyncMovies(true);
       setIsLoading(false);
+      setIsMoviesLoaded(true); // Устанавливаем флаг о первоначальной загрузке данных
     }
   };
 

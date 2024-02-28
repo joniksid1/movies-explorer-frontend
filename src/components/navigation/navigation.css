@@ -85,6 +85,10 @@
   align-items: center;
 }
 
+.navigation__link_acive {
+  text-decoration: underline;
+}
+
 .navigation__text {
   font-size: 14px;
   line-height: 16px;

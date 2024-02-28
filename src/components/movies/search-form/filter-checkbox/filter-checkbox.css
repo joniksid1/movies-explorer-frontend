@@ -22,6 +22,10 @@
   background-image: url(../../../../images/checkbox-checked.svg);
 }
 
+.search-form__checkbox:disabled::before {
+  cursor: not-allowed;
+}
+
 .search-form__text {
   font-size: 14px;
   font-weight: 400;

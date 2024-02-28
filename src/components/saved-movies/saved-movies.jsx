@@ -24,6 +24,7 @@ function SavedMovies({ isLoading, savedMovies, searchedSavedMovies, deleteMovie,
       <SearchForm
         loadSearchStateFromLocalStorage={() => { }}
         searchSavedMovies={searchSavedMovies}
+        isLoading={isLoading}
       />
       {isLoading && <Preloader />}
       {error && <div className='movies__error-wrapper'>

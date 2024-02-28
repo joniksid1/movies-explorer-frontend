@@ -47,6 +47,11 @@
   color: #A0A0A0;
 }
 
+.search-form__input:disabled {
+  cursor: not-allowed;
+  background-color: #fff;
+}
+
 .search-form__icon {
   position: absolute;
   top: 0;
@@ -78,6 +83,10 @@
 
 .search-form__button:hover {
   opacity: .8;
+}
+
+.search-form__button:disabled {
+  cursor: not-allowed;
 }
 
 .search-form__error {
