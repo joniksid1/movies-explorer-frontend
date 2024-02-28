@@ -19,28 +19,26 @@ function MoviesCardList({ movies, saveMovie, deleteMovie }) {
       <ul className='movies-card-list__list'>
         {isSavedMoviesPage
           ? movies.map((movie) => (
-              <MoviesCard
-                key={movie.movieId}
-                movie={movie}
-                deleteMovie={deleteMovie}
-                isSavedMoviesPage={isSavedMoviesPage}
-              />
-            ))
+            <MoviesCard
+              key={movie.movieId}
+              movie={movie}
+              deleteMovie={deleteMovie}
+              isSavedMoviesPage={isSavedMoviesPage}
+            />
+          ))
           : movies.slice(0, visibleCards).map((movie) => (
-              <MoviesCard
-                key={movie.movieId}
-                movie={movie}
-                saveMovie={saveMovie}
-                deleteMovie={deleteMovie}
-              />
-            ))}
+            <MoviesCard
+              key={movie.movieId}
+              movie={movie}
+              saveMovie={saveMovie}
+              deleteMovie={deleteMovie}
+            />
+          ))}
       </ul>
       {!isSavedMoviesPage && movies.length > visibleCards && (
-        <div className='movies-card-list__more'>
-          <button className='movies-card-list__more-button' onClick={handleShowMoreClick}>
-            Ещё
-          </button>
-        </div>
+        <button className='movies-card-list__more-button' onClick={handleShowMoreClick}>
+          Ещё
+        </button>
       )}
     </section>
   );

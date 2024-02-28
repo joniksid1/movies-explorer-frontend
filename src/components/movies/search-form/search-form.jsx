@@ -5,9 +5,15 @@ import './search-form.css';
 import FilterCheckbox from './filter-checkbox/filter-checkbox';
 import { useFormWithValidation } from '../../../hooks/useFormWithValidation';
 
-function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovies, isLoading }) {
+function SearchForm({
+  onSubmit,
+  loadSearchStateFromLocalStorage,
+  searchSavedMovies,
+  isLoading,
+  movies,
+}) {
   const location = useLocation();
-  const isSavedMovies = ['/saved-movies'].includes(location.pathname);
+  const isSavedMoviesRoute = ['/saved-movies'].includes(location.pathname);
 
   const [isChecked, setIsChecked] = useState(false);
   const { values, setValues, handleChange, errors, setErrors } = useFormWithValidation();
@@ -25,12 +31,19 @@ function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovi
   }, [setValues]);
 
   const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+    const name = values.name || '';
+    const updatedIsChecked = !isChecked;
+    setIsChecked(updatedIsChecked);
+    handleFormSubmit(name, updatedIsChecked);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!values.name) {
+    handleFormSubmit(values.name, isChecked);
+  };
+
+  const handleFormSubmit = (name, updatedIsChecked) => {
+    if (!name && !isSavedMoviesRoute) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         film: 'Нужно ввести ключевое слово',
@@ -43,10 +56,10 @@ function SearchForm({ onSubmit, loadSearchStateFromLocalStorage, searchSavedMovi
       film: '',
     }));
 
-    if (isSavedMovies) {
-      searchSavedMovies(values.name, isChecked);
+    if (isSavedMoviesRoute) {
+      searchSavedMovies(name, updatedIsChecked);
     } else {
-      onSubmit(values.name, isChecked);
+      onSubmit(name, updatedIsChecked);
     }
   };
 

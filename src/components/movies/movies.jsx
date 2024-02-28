@@ -38,13 +38,14 @@ function Movies({
         onSubmit={fetchMovies}
         loadSearchStateFromLocalStorage={loadSearchStateFromLocalStorage}
         isLoading={isLoading}
+        movies={movies}
       />
       {isLoading && <Preloader />}
-      {error && <div className='movies__error-wrapper'>
+      {error &&
         <p className='movies__error-message'>
           {error}
         </p>
-      </div>}
+      }
       {!isLoading && !error && movies.length > 0 && (
         <MoviesCardList
           movies={movies}

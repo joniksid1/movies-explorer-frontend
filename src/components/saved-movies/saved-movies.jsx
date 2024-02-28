@@ -4,7 +4,15 @@ import SearchForm from '../movies/search-form/search-form';
 import MoviesCardList from '../movies/movies-card-list/movies-card-list';
 import Preloader from '../movies/preloader/preloader';
 
-function SavedMovies({ isLoading, savedMovies, searchedSavedMovies, deleteMovie, searchSavedMovies, isSearchPerformed, error }) {
+function SavedMovies({
+  isLoading,
+  savedMovies,
+  searchedSavedMovies,
+  deleteMovie,
+  searchSavedMovies,
+  isSearchPerformed,
+  error,
+}) {
   const [displayedMovies, setDisplayedMovies] = useState([]);
 
   const displayMovies = (moviesType) => {
@@ -25,13 +33,14 @@ function SavedMovies({ isLoading, savedMovies, searchedSavedMovies, deleteMovie,
         loadSearchStateFromLocalStorage={() => { }}
         searchSavedMovies={searchSavedMovies}
         isLoading={isLoading}
+        movies={displayedMovies}
       />
       {isLoading && <Preloader />}
-      {error && <div className='movies__error-wrapper'>
+      {error &&
         <p className='movies__error-message'>
           {error}
         </p>
-      </div>}
+      }
       {!isLoading && !error && displayedMovies.length > 0 && (
         <MoviesCardList
           movies={displayedMovies}

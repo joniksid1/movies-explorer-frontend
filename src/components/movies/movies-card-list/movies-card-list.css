@@ -17,12 +17,6 @@
   justify-items: center;
 }
 
-.movies-card-list__more {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
 .movies-card-list__more-button {
   width: 100%;
   cursor: pointer;
