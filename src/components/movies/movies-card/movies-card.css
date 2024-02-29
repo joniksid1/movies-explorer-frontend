@@ -55,9 +55,10 @@
   opacity: .8;
 }
 
-.movies-card__delete-button {
+.movies-card__delete-button:hover {
   background-image: url(../../../images/cross.svg);
   background-size: 8px 8px;
+  background-color: #F9F9F9;
 }
 
 .movies-card__image {
@@ -88,5 +89,11 @@
 
   .movies-card__title {
     max-width: 235px;
+  }
+
+  .movies-card__delete-button {
+    background-image: url(../../../images/cross.svg);
+    background-size: 8px 8px;
+    background-color: #F9F9F9;
   }
 }

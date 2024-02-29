@@ -32,22 +32,20 @@ function MoviesCard({ movie, saveMovie, deleteMovie, isSavedMoviesPage }) {
 
   return (
     <li className='movies-card'>
-      <div className='movies-card__wrapper'>
-        <h2 className='movies-card__title'>{movie.nameRU}</h2>
-        <p className='movies-card__text'>{movieDuration()}</p>
-        <button
-          type='button'
-          className={`movies-card__button ${isSavedMoviesPage ? 'movies-card__delete-button' : activeClassName}`}
-          onClick={handleSaveClick}
+      <h2 className='movies-card__title'>{movie.nameRU}</h2>
+      <p className='movies-card__text'>{movieDuration()}</p>
+      <button
+        type='button'
+        className={`movies-card__button ${isSavedMoviesPage ? `movies-card__delete-button ${activeClassName}` : activeClassName}`}
+        onClick={handleSaveClick}
+      />
+      <a href={movie.trailerLink} target='_blank' rel='noopener noreferrer'>
+        <img
+          src={movie.image}
+          alt='Промо-изображение фильма'
+          className='movies-card__image'
         />
-        <a href={movie.trailerLink} target='_blank' rel='noopener noreferrer'>
-          <img
-            src={movie.image}
-            alt='Промо-изображение фильма'
-            className='movies-card__image'
-          />
-        </a>
-      </div>
+      </a>
     </li>
   );
 }

@@ -82,4 +82,8 @@
     width: 20px;
     height: 20px;
   }
+
+  .popup__caption {
+    max-width: 260px;
+  }
 }

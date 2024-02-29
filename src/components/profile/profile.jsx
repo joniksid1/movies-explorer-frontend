@@ -2,20 +2,20 @@ import React, { useState, useContext, useEffect } from 'react';
 import './profile.css';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
+import { validateEmail } from '../../utils/validateEmail';
 
 function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIsToolTipOpen }) {
   const currentUser = useContext(CurrentUserContext);
-  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
+  const { values, handleChange, errors, isValid, setIsValid, resetForm } = useFormWithValidation();
   const [isEditing, setIsEditing] = useState(false);
   const [serverError, setServerError] = useState('');
   const [isDataChanged, setIsDataChanged] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // При монтировании компонента, устанавливаем начальные значения полей
   useEffect(() => {
     resetForm({ name: currentUser.name, email: currentUser.email }, {}, true);
   }, [currentUser, resetForm]);
 
-  // Обновляем флаг isDataChanged при изменении значений в форме
   useEffect(() => {
     if (values.name !== currentUser.name || values.email !== currentUser.email) {
       setIsDataChanged(true);
@@ -36,6 +36,7 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
   const handleSaveClick = () => {
     setServerError('');
     if (isValid) {
+      setIsLoading(true);
       handleUpdateUser(values)
         .then(() => {
           setIsEditing(false);
@@ -45,6 +46,9 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
         })
         .catch(error => {
           setServerError(error.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -73,7 +77,7 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
             className='profile__input'
             value={values.name || ''}
             onChange={handleChange}
-            disabled={!isEditing}
+            disabled={!isEditing || isLoading}
           />
           <span className='profile__error'>{errors.name}</span>
         </div>
@@ -89,8 +93,12 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
             maxLength={65}
             className='profile__input profile__input_type_email'
             value={values.email || ''}
-            onChange={handleChange}
-            disabled={!isEditing}
+            onChange={(event) => {
+              handleChange(event)
+              const isValidEmail = validateEmail(event.target.value);
+              setIsValid(isValidEmail);
+            }}
+            disabled={!isEditing || isLoading}
           />
           <span className='profile__error'>{errors.email}</span>
         </div>
@@ -103,7 +111,7 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
               type='button'
               className='profile__button profile__save-button'
               onClick={handleSaveClick}
-              disabled={!isValid || !isDataChanged}
+              disabled={!isValid || !isDataChanged || isLoading}
             >
               Сохранить
             </button>
@@ -121,6 +129,7 @@ function Profile({ onSignOut, handleUpdateUser, setIsSucsessed, setAction, setIs
               type='button'
               className='profile__button'
               onClick={handleEditClick}
+              disabled={isLoading}
             >
               Редактировать
             </button>

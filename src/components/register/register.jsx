@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './register.css';
 import Logo from '../../images/logo.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormWithValidation } from '../../hooks/useFormWithValidation';
+import { validateEmail } from '../../utils/validateEmail';
 
-const Login = ({ onRegister }) => {
+const Register = ({ onRegister }) => {
   const navigate = useNavigate();
-  const { values, handleChange, errors, isValid } = useFormWithValidation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { values, handleChange, errors, isValid, setIsValid } = useFormWithValidation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isValid) {
-      onRegister(values.name, values.password, values.email);
+    if (isValid && !isLoading) {
+      setIsLoading(true);
+      onRegister(values.name, values.password, values.email)
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -27,10 +33,12 @@ const Login = ({ onRegister }) => {
           <input
             name='name'
             type='text'
+            minLength={2}
             className='register__input register__input_type_name'
             required={true}
             value={values.name || ''}
             onChange={handleChange}
+            disabled={isLoading}
           />
           <span className='register__input-error'>{errors.name}</span>
         </div>
@@ -44,7 +52,12 @@ const Login = ({ onRegister }) => {
             className='register__input register__input_type_email'
             required={true}
             value={values.email || ''}
-            onChange={handleChange}
+            onChange={(event) => {
+              handleChange(event);
+              const isValidEmail = validateEmail(event.target.value);
+              setIsValid(isValidEmail);
+            }}
+            disabled={isLoading}
           />
           <span className='register__input-error'>{errors.email}</span>
         </div>
@@ -60,6 +73,7 @@ const Login = ({ onRegister }) => {
             minLength={5}
             value={values.password || ''}
             onChange={handleChange}
+            disabled={isLoading}
           />
           <span className='register__input-error'>{errors.password}</span>
         </div>
@@ -67,9 +81,9 @@ const Login = ({ onRegister }) => {
           <button
             className='register__button'
             type='submit'
-            disabled={!isValid}
+            disabled={!isValid || isLoading}
           >
-            Зарегистрироваться
+            {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
           </button>
           <p className='register__caption'>
             Уже зарегистрированы?
@@ -84,4 +98,4 @@ const Login = ({ onRegister }) => {
   );
 };
 
-export default Login;
+export default Register;

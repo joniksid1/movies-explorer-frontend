@@ -54,6 +54,12 @@ function App() {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (isLoggedIn && (location.pathname === '/sign-in' || location.pathname === '/sign-up')) {
+      navigate('/');
+    }
+  }, [isLoggedIn, location.pathname, navigate]);
+
   const auth = useCallback(async () => {
     try {
       const res = await api.getContent();
