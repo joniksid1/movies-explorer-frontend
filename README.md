@@ -11,6 +11,9 @@
 
 Вёрстка по макету light-5
 
+* [Ссылка на выложенный проект на сервеер](https://joniksid.nomoredomainsmonster.ru)
+* [Ссылка на pull-request](https://github.com/joniksid1/movies-explorer-frontend/pull/2)
+
 **Описание**
 
 Фронтенд дипломного проекта в Яндекс.Практикум, посвящённого фильмам.

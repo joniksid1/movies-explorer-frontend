@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import './burger-menu.css';
 
 function BurgerMenu({ handleOpen }) {

@@ -1,14 +1,17 @@
-import React from "react";
+import React from 'react';
 import Logo from '../../images/logo.svg';
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './navigation.css';
 import BurgerMenu from './burger-menu/burger-menu';
-import MenuModal from "./menu-modal/menu-modal";
 
-function Navigation({ isLoggedIn }) {
+function Navigation({ isLoggedIn, setIsMenuOpen }) {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isMoviesRoute = ['/movies'].includes(location.pathname);
+  const isSavedMoviesRoute = ['/saved-movies'].includes(location.pathname);
+
   const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -25,10 +28,6 @@ function Navigation({ isLoggedIn }) {
     setIsMenuOpen(true);
   };
 
-  const hadndleMenuClose = () => {
-    setIsMenuOpen(false);
-  }
-
   return (
     <>
       <nav className='navigation'>
@@ -41,7 +40,7 @@ function Navigation({ isLoggedIn }) {
               <li className='navigation__list-item'>
                 <Link
                   to={'/movies'}
-                  className='navigation__link'
+                  className={`navigation__link ${isMoviesRoute ? 'navigation__link_acive' : ''}`}
                 >
                   Фильмы
                 </Link>
@@ -49,7 +48,7 @@ function Navigation({ isLoggedIn }) {
               <li className='navigation__list-item'>
                 <Link
                   to={'/saved-movies'}
-                  className='navigation__link'
+                  className={`navigation__link ${isSavedMoviesRoute ? 'navigation__link_acive' : ''}`}
                 >
                   Сохранённые фильмы
                 </Link>
@@ -97,10 +96,6 @@ function Navigation({ isLoggedIn }) {
           <BurgerMenu handleOpen={handleBurgerMenuClick} />
         )}
       </nav>
-      <MenuModal
-        isMenuOpen={isMenuOpen}
-        onClose={hadndleMenuClose}
-      />
     </>
   );
 }

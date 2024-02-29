@@ -1,27 +1,48 @@
+const MOVIES_API_BASE_URL = 'https://api.nomoreparties.co/'
+
+const ERROR_TEXT = `
+  Во время запроса произошла ошибка.
+  Возможно, проблема с соединением или сервер недоступен.
+  Подождите немного и попробуйте ещё раз.
+`
+
 const apiOptions = {
-  url: 'https://mesto.nomoreparties.co/v1/cohort-76',
+  // url: 'http://localhost:3001',
+  url: 'https://api.joniksid.nomoredomainsmonster.ru',
   headers: {
-    authorization: '879fc354-cfc1-42a1-b8be-cb6ca897d345',
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 };
 
-const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inputErrorSelector: '.popup__input-error_type_',
-  inputErrorFrameClass: 'popup__input_error-frame',
+const moviesApiOptions = {
+  url: `${MOVIES_API_BASE_URL}beatfilm-movies`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 };
 
-const registerValidationConfig = {
-  formSelector: '.register__form',
-  inputSelector: '.register__input',
-  submitButtonSelector: '.register__button',
-  inputErrorSelector: '.register__input-error_type_',
-  inputErrorFrameClass: 'register__input_error-frame',
+const SHORTFILM_DURATION = 40;
+const LAPTOP_FILMS_AMOUNT = 12;
+const TABLET_FILMS_AMOUNT = 8;
+const MOBILE_FILMS_AMOUNT =5;
+const DESKTOP_WIDTH = 1280;
+const TABLET_WIDTH = 786;
+const MOBILE_WIDTH = 320;
+const MOBILE_TABLET_CARDS_TO_ADD = 2;
+const DESKTOP_CARDS_TO_ADD = 3;
+
+export {
+  apiOptions,
+  moviesApiOptions,
+  ERROR_TEXT,
+  MOVIES_API_BASE_URL,
+  SHORTFILM_DURATION,
+  LAPTOP_FILMS_AMOUNT,
+  TABLET_FILMS_AMOUNT,
+  MOBILE_FILMS_AMOUNT,
+  DESKTOP_WIDTH,
+  TABLET_WIDTH,
+  MOBILE_WIDTH,
+  MOBILE_TABLET_CARDS_TO_ADD,
+  DESKTOP_CARDS_TO_ADD,
 };
-
-const formValidators = {}
-
-export { apiOptions, validationConfig, formValidators, registerValidationConfig };

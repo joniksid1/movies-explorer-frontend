@@ -1,8 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './not-found.css';
 
 function NotFound() {
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1); // Переход на предыдущую страницу
+  };
 
   return (
     <main className='not-found'>
@@ -12,9 +17,9 @@ function NotFound() {
       <p className='not-found__caption'>
         Страница не найдена
       </p>
-      <Link className='not-found__link' to='/'>
+      <button className='not-found__link' onClick={handleGoBack}>
         Назад
-      </Link>
+      </button>
     </main>
   );
 }
